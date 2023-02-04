@@ -1,56 +1,32 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>LIFF - LINE Front-end Framework</title>
-  <style>
-    body { margin: 16px }
-    button, img { display: none; width: 40% }
-    button { padding: 16px }
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 </head>
 <body>
-  <h1>Page 2</h1>
-  <img id="pictureUrl">
-  <button id="btnLogIn" onclick="logIn()">Log In</button>
-  <button id="btnLogOut" onclick="logOut()">Log Out</button>
+  <h3 id="result">Something is going to happen here...</h3>
+  <button onclick="scanCodeV2()">QR Code Reader</button>
   <script src="https://static.line-scdn.net/liff/edge/2/sdk.js"></script>
   <script>
-    function logOut() {
-      liff.logout()
-      window.location.reload()
-    }
-    function logIn() {
-      // liff.login({ redirectUri: window.location.href })
-      liff.login()
-      
-    }
-    async function getUserProfile() {
-      const profile = await liff.getProfile()
-      document.getElementById("pictureUrl").style.display = "block"
-      document.getElementById("pictureUrl").src = profile.pictureUrl
-    }
-    async function main() {
-      await liff.init({ liffId: "1657865157-PDD7BEn9" })
-      // await liff.init({ liffId: "1657871935-VmwyzwDm" })
-      // await liff.init({ liffId: "1656508316-k7jNojXm" })
-      
-      
-      if (liff.isInClient()) {
-        getUserProfile()
-      } else {
-        if (liff.isLoggedIn()) {
-          getUserProfile()
-          document.getElementById("btnLogIn").style.display = "none"
-          document.getElementById("btnLogOut").style.display = "block"
-        } else {
-          document.getElementById("btnLogIn").style.display = "block"
-          document.getElementById("btnLogOut").style.display = "none"
-        }
+    async function scanCodeV2() {
+      try {
+        const result = await liff.scanCodeV2();
+        document.querySelector('#result').innerHTML = result.value;
+      } catch(error) {
+        console.log('scanCodeV2', error);
       }
     }
-    main()
+    async function main() {
+      // await liff.init({ liffId: '1653575653-1ygAp27X' });
+      // await liff.init({ liffId: '1657871935-VmwyzwDm' });
+      await liff.init({ liffId: '1657865157-PDD7BEn9' });
+      
+      if (!liff.isLoggedIn()) {
+        liff.login();
+      }
+    }
+    main();
   </script>
 </body>
 </html>
